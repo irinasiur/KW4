@@ -1,8 +1,5 @@
 import json
-import os
 from abc import ABC, abstractmethod
-from vacancy import HH_Vacancy
-
 import requests
 
 
@@ -32,14 +29,16 @@ class SuperJobAPI(API):
     """
     get_tag: str
 
-    def __init__(self, vacancy_name, search_city):
+    def __init__(self, vacancy_name: str, search_city: str):
         """
-        Магический метод для инициализации экземпляров класса SuperJobAPI.
+        Магический метод для инициализации экземпляров класса SuperJobAPI
+            vacancy_name - название вакаансии;
+            search_city - название города, в котором необходимо найти вакансиию
         """
         self.sj_vacancy_name = vacancy_name
         self.sj_city = search_city
 
-    def get_page(self):
+    def get_page(self) -> dict:
         """
         Метод для получения страницы со списком вакансий.
         Аргументы:
@@ -64,23 +63,23 @@ class HeadHunterAPI(API):
     """
     get_tag: str
 
-    def __init__(self, vacancy_name, search_city):
+    def __init__(self, vacancy_name: str, search_city: str):
         """
         Магический метод для инициализации экземпляров класса.
         """
         self.hh_vacancy_name = vacancy_name
         self.hh_city = search_city
 
-    def get_anything(self, get_tag):
+    @staticmethod
+    def get_anything(get_tag: str) -> dict:
         """
-        Метод принимает endpoint API
-        возвращает json объект.
+        Метод принимает endpoint API и возвращает json объект.
         """
         site = "https://api.hh.ru/"
         if requests.get(site + get_tag).status_code == 200:
             return json.loads(requests.get(site + get_tag).content.decode())
 
-    def get_areas(self):
+    def get_areas(self) -> dict:
         """
         Метод для получения словаря, в котором ключем является название города,
         значением является id этого города.
@@ -99,7 +98,7 @@ class HeadHunterAPI(API):
         else:
             return ar_dict
 
-    def get_page(self):
+    def get_page(self) -> dict:
         """
         Метод для получения страницы со списком вакансий.
         Аргументы:
@@ -122,14 +121,5 @@ class HeadHunterAPI(API):
             req.close()
             return json.loads(data)
 
-#
-# a = HeadHunterAPI("аналик", "Мова")
-# page_gotten = a.get_page()
-# v1 = HH_Vacancy(page_gotten["items"][0]["id"])
-#
-# print(v1.hh_vacancy_name)
-#
-# sup_job = SuperJobAPI("анитик", "скТ-ПЕтербург")
-# # print(sup_job.get_page())
 
 
